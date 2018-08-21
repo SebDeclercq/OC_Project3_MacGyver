@@ -1,2 +1,4 @@
 *.zip
 *.md.html
+venv/
+__pycache__
