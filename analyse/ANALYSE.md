@@ -6,27 +6,28 @@ Le présent document contient mon analyse relative au cahier des charges décriv
 ### Identification des classes
 Afin de mener à bien le développement, plusieurs classes ont été repérées :
 1. `Game` : le jeu en lui-même
-2. `Config` : la configuration
-3. `GameBoard` : le plateau du jeu
-4. `BoardElement` : les éléments présents sur le plateau
+2. `GameBoard` : le plateau du jeu
+3. `BoardElement` : les éléments présents sur le plateau
 
 Ces éléments seront considérés comme des classes filles de `BoardElement`, à savoir :
-1. `Cell` : une cellule sur le plateau
-2. `Pawn` : le pion
-3. `Tool` : un objet présent sur le plateau
+1. `Pawn` : le pion
+2. `Tool` : un objet présent sur le plateau
+
+Deux autres classes "de soutien" seront potentiellement présentes, à utiliser comme classes uniquement (i.e. ne pas instancier) :
+1. `Config` : la configuration globale du programme
+2. `Constants` : la liste des constantes
 
 #### `Game`
 La classe `Game` doit permettre de démarrer le jeu, de jouer et de quitter en fin de partie.
 
-Pour débuter le jeu, elle doit créer un nouveau plateau grâce à la configuration fournie.
+Pour débuter le jeu, elle doit créer un nouveau plateau grâce à la configuration fournie, un pion et les trois objets. Ces quatre derniers devront être placés aléatoirement sur le plateau.
 
-Pour quitter le jeu, elle doit vérifier si le pion a bien l'autorisation de sortir (i.e. s'il a bien collecté tous les objets attendus et qu'il se trouve sur la case de sortie).
+Durant la phase de jeu, le programme doit prendre en entrée un input utilisateur demandant de déplacer le pion sur le plateau, vérifier l'autorisation d'accès et mener les actions liées à la case (présence d'un objet, case de sortie, etc.).
 
-#### `Config`
-Cette configuration sera fournie par une classe `Config`, qui *parsera* un fichier de configuration type JSON, YAML ou assimilé qui contiendra l'ensemble des valeurs utiles à chaque classe du programme.
+Pour quitter le jeu, elle doit vérifier si le pion a bien l'autorisation de sortir (i.e. s'il a bien collecté tous les objets attendus et qu'il se trouve sur la case de sortie). Le cas échéant, le joueur gagne. A l'inverse, il perd.
 
 #### `GameBoard`
-Le plateau de jeu sera créé sur base d'un fichier *modèle* complété par l'utilisateur final (format à définir).
+Le plateau de jeu sera créé sur base d'un fichier *modèle* complété par l'utilisateur final. Le format du fichier sera spécifié dans les attributs de la classe `Config` ; plusieurs méthodes de *parsing* devront être développées.
 
 Lors de son instanciation, il positionnera aléatoirement les trois `Tool` demandés.
 
@@ -35,21 +36,62 @@ Afin de permettre la jouabilité du programme, il sera nécessaire que soient co
 #### `BoardElement`
 Chaque élément présent sur le plateau héritera de cette classe abstraite qui sert à spécifier une fois pour toute que chaque élément du jeu a sa propre position, définie par une paire abscisse/ordonnée.
 
-##### `Cell`
-Chaque cellule du plateau sera définie par sa position ainsi qu'une notion d'autorisation (`True`, `False`).
-
 ##### `Tool`
-Chaque objet (*aiguille*, *tube* et *éther*) aura un type (son "nom") et une position.
+Chaque objet (*aiguille*, *tube* et *éther*) aura une position.
 
 ##### `Pawn`
 Le pion sera défini par sa position. Il devra se déplacer sur le plateau et ramasser les objets sur son passage. Ces objets seront stockés dans un attribut.
 
-### UML
-Voici la représentation UML (v. 1):
+#### `Config`
+Cette configuration sera fournie par une classe `Config`, sous forme d'attributs de classe.
 
-![UML v1][uml_v1]
+*Idéalement*, il faudrait trouver un moyen pour charger automatiquement le contenu d'un fichier de configuration de type YAML ou JSON dans les attributs de classe.
+
+#### `Constants`
+Proposera une liste de constantes utiles au programme, sous forme d'attributs de classe.
+
+## Déroulement du programme
+Le déroulement du programme peut se définir comme suit :
+1. Initialisation du `Game`
+    1. Création du `GameBoard` (composition d'objet)
+        1. *Parser* le fichier modèle et constituer le plateau
+    2. Création du `Pawn`
+    3. Création des trois `Tool` (aiguille, tube, éther)
+    4. Placer aléatoirement le `Pawn` et les trois `Tool` sur le plateau
+2. Déroulement du `Game`
+    1. Attente de l'input
+    2. À la réception de l'input
+        1. Déplacer le `Pawn`
+
+          > Si le déplacement n'est pas autorisé (i.e. mur ou sortie du plateau) : retour à 2.1.
+          >
+          > Sinon, continuer au 2.2.2
+
+        2. Contrôler si un `Tool` est dans la case de destination
+
+           > Si non, continuer au 2.2.3
+           >
+           > Si oui, récupérer l'objet pour le `Pawn` et continuer au 2.2.3
+
+        3. Contrôler si la case de destination est la case de sortie
+
+           > Si non, retour à 2.1
+           >
+           > Si oui
+
+            1. Contrôler si le `Pawn` a bien les trois `Tool` en sa possession
+
+               > Si oui, c'est **gagné :-)**
+               >
+               > Si non, c'est **perdu :-(**
+
+
+### UML
+Voici la représentation UML (v. 2):
+
+![UML v2][uml_v2]
 
 *À noter que les constructeurs ont été volontairement omis.*
 
 [url_parcours]: https://openclassrooms.com/fr/paths/68-developpeur-dapplication-python
-[uml_v1]: ./oc-project-3-uml-1.jpg
+[uml_v2]: ./oc-project-3-uml-2.jpg
