@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
-class Tool:
-    def __init__(self):
-        pass
+"""
+@desc Module containing the Tool class
+@author SDQ <sdq@afnor.org>
+@version 1.0.0
+@note    1.0.0 (2018-08-22) : first functional version
+"""
+from app.BoardElement import BoardElement
+
+class Tool(BoardElement):
+    """Class defining a tool on the board"""
+    def __init__(self, x, y):
+        """Constructor
+        @param int  x      Abscissa
+        @param int  y      Ordinate"""
+        super().__init__(x, y)

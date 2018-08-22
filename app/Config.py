@@ -1,3 +1,13 @@
 #!/usr/bin/env python3
+"""
+@desc Module containing the Config class
+@author SDQ <sdq@afnor.org>
+@version 1.0.0
+@note    1.0.0 (2018-08-22) : first functional version
+"""
+
 class Config:
-    PATH_MODEL_FILE = 'model.ext'
+    """Config class, intended to be used as a class only, containing all central
+    variables used throughout the project"""
+    PATH_MODEL_FILE = 'model.txt'
+    FORMAT_MODEL_FILE = 'text'
