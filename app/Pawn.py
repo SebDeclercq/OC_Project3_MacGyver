@@ -9,11 +9,10 @@ from app.BoardElement import BoardElement
 
 class Pawn(BoardElement):
     """Class defining a pawn on the board"""
-    def __init__(self, x, y):
+    def __init__(self, position):
         """Constructor
-        @param int x Abscissa
-        @param int y Ordinate"""
-        super().__init__(x, y)
+        @param tuple Position(Abscissa, Ordinate)"""
+        super().__init__(position)
         self.tools = []
 
     def move(self, way):

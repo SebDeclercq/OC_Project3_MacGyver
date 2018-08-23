@@ -9,8 +9,7 @@ from app.BoardElement import BoardElement
 
 class Tool(BoardElement):
     """Class defining a tool on the board"""
-    def __init__(self, x, y):
+    def __init__(self, position):
         """Constructor
-        @param int  x      Abscissa
-        @param int  y      Ordinate"""
-        super().__init__(x, y)
+        @param tuple Position(Abscissa, Ordinate)"""
+        super().__init__(position)

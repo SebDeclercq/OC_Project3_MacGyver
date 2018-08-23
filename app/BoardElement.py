@@ -11,10 +11,15 @@ class BoardElement(ABC):
     """Abstract class defining all the elements which could be found on a boardgame,
     for instance a pawn or a tool"""
     @abstractmethod
-    def __init__(self, x, y):
+    def __init__(self, position):
         """Abstract constructor defining a position for the object
-        @param int x Abscissa
-        @param int y Ordinate"""
-        self.x = x
-        self.y = y
-        self.position = (self.x, self.y)
+        @param tuple Position(Abscissa, Ordinate)"""
+        self.position = position
+
+    @property
+    def x(self):
+        return self.position[0]
+
+    @property
+    def y(self):
+        return self.position[1]

@@ -12,11 +12,11 @@ from app.Config import Config
 class GameBoard:
     """Class defining a board for a gameboard"""
     def __init__(self):
-        self.authorized_cells = []
-        self.unauthorized_cells = []
+        self.authorized_cells = set()
+        self.unauthorized_cells = set()
         self.exit_cell = None
         self._parse_model_file()
-        pass
+
     def _parse_model_file(self):
         if Config.FORMAT_MODEL_FILE.lower() == 'excel':
             self._parse_excel_model_file()
@@ -28,7 +28,7 @@ class GameBoard:
             raise ValueError('Exit cell "V" missing from "%s"'
                              % Config.PATH_MODEL_FILE)
         else:
-            self.authorized_cells.append(self.exit_cell) # exit_cell is obviously authorized
+            self.authorized_cells.add(self.exit_cell) # exit_cell is obviously authorized
 
         if len(self.authorized_cells) + len(self.unauthorized_cells) != 15 * 15:
             raise ValueError('The labyrinth has to be of 15x15')
@@ -46,9 +46,9 @@ class GameBoard:
                 value = sheet.cell(i, j).value.upper()  # Get cell value
                 cell = (i, j)                           # Instantiate Cell object
                 if value == xlrd.empty_cell.value:      # If cell is empty => authorized
-                    self.authorized_cells.append(cell)
+                    self.authorized_cells.add(cell)
                 elif value == "X":                      # If Cell contains X => wall => unauthorized
-                    self.unauthorized_cells.append(cell)
+                    self.unauthorized_cells.add(cell)
                 elif value == "V":                      # If Cell contains V => exit cell
                     self.exit_cell = cell
                 else:
@@ -57,12 +57,12 @@ class GameBoard:
             if sheet.ncols < 15:                        # If there's less than 15 cols in the row
                 for j in range(15 - sheet.ncols):
                     cell = (i, j)
-                    self.authorized_cells.append(cell)  # Add authorized cells to complete because every cell is then empty
+                    self.authorized_cells.add(cell)  # Add authorized cells to complete because every cell is then empty
         if sheet.nrows < 15:                            # If there's less than 15 rows
             for i in range(15 - sheet.nrows):
                 for j in range(15):
                     cell = (i, j)
-                    self.authorized_cells.append(cell)  # Add authorized cells to complete because every cell is then empty
+                    self.authorized_cells.add(cell)  # Add authorized cells to complete because every cell is then empty
 
     def _parse_text_model_file(self):
         """Method parsing the Text model file (path in Config class).
@@ -75,9 +75,9 @@ class GameBoard:
                     value = value.upper()
                     cell = (i, j)
                     if value == " ":                        # If cell is empty => authorized
-                        self.authorized_cells.append(cell)
+                        self.authorized_cells.add(cell)
                     elif value == "X":                      # If cell contains X => wall => unauthorized
-                        self.unauthorized_cells.append(cell)
+                        self.unauthorized_cells.add(cell)
                     elif value == "V":                      # If cell contains V => exit cell
                         self.exit_cell = cell
                     else:
