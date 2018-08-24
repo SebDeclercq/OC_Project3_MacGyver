@@ -47,7 +47,6 @@ class Game:
         """Method managing user interaction
         @return bool True => success / False => failure"""
 
-        print(self.boardgame.authorized_cells)
         print('MacGyver is here : %s !' % (self.macgyver.position,))
         print(self.boardgame.exit_cell)
         while True:

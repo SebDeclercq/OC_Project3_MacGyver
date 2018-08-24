@@ -2,9 +2,11 @@
 """
 @desc Module containing the BoardGame class
 @author SDQ <sdq@afnor.org>
-@version 0.0.2
+@version 0.0.3
 @note    0.0.1 (2018-08-22) : init class
 @note    0.0.2 (2018-08-24) : updating with sets + user-defined width & height
+@note    0.0.3 (2018-08-24) : reverting Y axis (put 0, 0 at the bottom-left
+                              instead of top-left)
 """
 import xlrd
 import csv
@@ -58,8 +60,9 @@ class BoardGame:
         for i in range(sheet.nrows):
             # And for every cells of the row
             for j in range(sheet.ncols):
+                x, y = j, Config.BOARDGAME_HEIGHT - i - 1
                 value = sheet.cell(i, j).value.upper()  # Get cell value
-                cell = (i, j)                           # Instantiate cell
+                cell = (x, y)                           # Instantiate cell
                 if value == xlrd.empty_cell.value:      # If empty=>authorized
                     self.authorized_cells.add(cell)
                 elif value == "X":                      # If X=>unauthorized
@@ -74,16 +77,16 @@ class BoardGame:
             # If there's less than X cols in the row
             if sheet.ncols < Config.BOARDGAME_WIDTH:
                 for j in range(Config.BOARDGAME_WIDTH - sheet.ncols):
-                    cell = (i, j)
+                    x = Config.BOARDGAME_WIDTH - j - 1
+                    cell = (x, y)
                     # Add authorized cells to complete because
                     # every cell is then empty
                     self.authorized_cells.add(cell)
         # If there's less than X rows
         if sheet.nrows < Config.BOARDGAME_HEIGHT:
-            for i in range(Config.BOARDGAME_HEIGHT - sheet.nrows):
-                i += sheet.nrows
-                for j in range(Config.BOARDGAME_WIDTH):
-                    cell = (i, j)
+            for y in range(Config.BOARDGAME_HEIGHT - sheet.nrows):
+                for x in range(Config.BOARDGAME_WIDTH):
+                    cell = (x, y)
                     # Add authorized cells to complete because
                     # every cell is then empty
                     self.authorized_cells.add(cell)
