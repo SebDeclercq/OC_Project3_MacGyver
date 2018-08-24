@@ -11,15 +11,16 @@ from app.Pawn import Pawn
 from app.Tool import Tool
 import random
 
+
 class Game:
     """Master class for the entire project, which will pilot all operations
     throughout the game"""
-    def __init__(self):
+    def __init__(self) -> None:
         self.boardgame = BoardGame()
         self.tools = set()
         self._randomly_place_board_elements()
 
-    def play(self):
+    def play(self) -> None:
         """Method defining the entire game process"""
         result = self._start_game()
         if result:
@@ -28,24 +29,26 @@ class Game:
             print('You die :-(')
         # self._quit_game() # Is it useful ?
 
-    def _randomly_place_board_elements(self):
+    def _randomly_place_board_elements(self) -> None:
         """Method defining all four elements required on the boardgame :
         MacGyver, a needle, a syringe and a bottle of ether
         @return void"""
-        random_positions = random.sample(self.boardgame.authorized_cells, 4) # Extract four distinct authorized positions
+        # Extract four distinct authorized positions
+        random_positions = random.sample(self.boardgame.authorized_cells, 4)
         self.macgyver = Pawn(random_positions.pop(0))
         for i, typ in enumerate(('needle', 'syringe', 'ether')):
             self.tools.add(Tool(random_positions[i], typ))
-        self.tools = frozenset(self.tools)                                   # Frozes the set for further use
+        # Frozes the set for further use
+        self.tools = frozenset(self.tools)
 
-    def _start_game(self):
+    def _start_game(self) -> bool:
         """Method managing user interaction
         @return bool True => success / False => failure"""
-        return random.choice((True, False)) # FOR DEV
+        return random.choice((True, False))  # FOR DEV
 
-    def _allow_exit(self):
+    def _allow_exit(self) -> bool:
         pass
 
-    def _quit_game(self):
+    def _quit_game(self) -> None:
         """Is it useful ???"""
         pass

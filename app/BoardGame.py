@@ -14,13 +14,13 @@ from app.Config import Config
 
 class BoardGame:
     """Class defining a board for a boardgame"""
-    def __init__(self):
+    def __init__(self) -> None:
         self.authorized_cells = set()
         self.unauthorized_cells = set()
         self.exit_cell = None
         self._parse_model_file()
 
-    def _parse_model_file(self):
+    def _parse_model_file(self) -> None:
         model_dir = os.path.dirname(Config.PATH_MODEL_FILE)
         model_file = os.path.basename(Config.PATH_MODEL_FILE)
         model_ext = os.path.splitext(Config.PATH_MODEL_FILE)[1].lower()
@@ -49,7 +49,7 @@ class BoardGame:
         self.authorized_cells = frozenset(self.authorized_cells)
         self.unauthorized_cells = frozenset(self.unauthorized_cells)
 
-    def _parse_excel_model_file(self, model_path):
+    def _parse_excel_model_file(self, model_path: str) -> None:
         """Method parsing the Excel model file (path in Config class)
         @return void"""
         workbook = xlrd.open_workbook(model_path)
@@ -88,7 +88,7 @@ class BoardGame:
                     # every cell is then empty
                     self.authorized_cells.add(cell)
 
-    def _parse_text_model_file(self, model_path):
+    def _parse_text_model_file(self, model_path: str) -> None:
         """Method parsing the Text model file (path in Config class).
         Reads the input file as a CSV file delimited by |
         @return void"""
