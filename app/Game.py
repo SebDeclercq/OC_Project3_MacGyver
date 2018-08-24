@@ -2,8 +2,9 @@
 """
 @desc Module containing the Game class
 @author SDQ <sdq@afnor.org>
-@version 0.0.1
+@version 0.0.2
 @note    0.0.1 (2018-08-22) : initialization
+@note    0.0.2 (2018-08-24) : game is handled from start to end (text-only)
 """
 from app.BoardGame import BoardGame
 from app.Constants import Constants
@@ -26,10 +27,9 @@ class Game:
         """Method defining the entire game process"""
         result = self._start_game()
         if result:
-            print('You win :-)')
+            print(f"\033[1mMacGyver is FREEEE !\033[0m")
         else:
-            print('You die :-(')
-        # self._quit_game() # Is it useful ?
+            print(f"\033[11mMacGyver didn't get out...\033[0m")
 
     def _randomly_place_board_elements(self) -> None:
         """Method defining all four elements required on the boardgame :
@@ -47,8 +47,11 @@ class Game:
         """Method managing user interaction
         @return bool True => success / False => failure"""
 
-        print('MacGyver is here : %s !' % (self.macgyver.position,))
-        print(self.boardgame.exit_cell)
+        if Config.DEBUG:
+            print('MacGyver is here : %s !' % (self.macgyver.position,))
+            print('Tools are here : ', [tool.position for tool in self.tools])
+            print('Exit is here : %s !' % (self.boardgame.exit_cell,))
+
         while True:
             freedom = False
             way = None
@@ -74,21 +77,26 @@ class Game:
                         'MacGyver has moved from %s to %s'
                         % (self.macgyver.old_position, self.macgyver.position)
                     )
-                    tools_positions = (tool.position for tool in self.tools)
-                    if self.macgyver.position in tools_positions:
-                        pass
+                    for tool in self.tools:
+                        if self.macgyver.position == tool.position:
+                            print('MacGyver has found a %s !' % tool.type)
+                            self.macgyver.pick_up(tool)
+                            tool.position = None
                     if self.macgyver.position == self.boardgame.exit_cell:
-                        freedom = True
+                        print('MacGyver has reached the guardian... '
+                              'Will he get free ?')
+                        freedom = self._allow_exit()
                         break
-                        self._allow_exit()
                 else:
                     print("Even MacGyver cannot pass through brick walls !")
             way = None
         return freedom
 
     def _allow_exit(self) -> bool:
-        pass
-
-    def _quit_game(self) -> None:
-        """Is it useful ???"""
-        pass
+        """Check if MacGyver has all three tools.
+        @return bool If True, he can take the guardian down
+                     and get free ! If False, he dies..."""
+        if self.tools == frozenset(self.macgyver.tools):
+            return True
+        else:
+            return False

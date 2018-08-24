@@ -13,3 +13,4 @@ class Config:
     PATH_MODEL_FILE = 'models/model.xlsx'
     BOARDGAME_WIDTH = 15
     BOARDGAME_HEIGHT = 15
+    DEBUG = True

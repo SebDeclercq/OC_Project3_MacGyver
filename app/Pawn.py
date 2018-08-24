@@ -2,13 +2,14 @@
 """
 @desc Module containing the Pawn class
 @author SDQ <sdq@afnor.org>
-@version 0.0.1
+@version 0.0.2
 @note    0.0.1 (2018-08-22) : initialization
+@note    0.0.2 (2018-08-24) : all identified methods in UML are up and running
 """
 from app.BoardElement import BoardElement
 from app.Constants import Constants
 from app.Tool import Tool
-from typing import Tuple, FrozenSet
+from typing import Tuple, FrozenSet, List
 
 
 class Pawn(BoardElement):
@@ -17,7 +18,7 @@ class Pawn(BoardElement):
         """Constructor
         @param tuple Position(Abscissa, Ordinate)"""
         super().__init__(position)
-        self.tools = []
+        self.tools = []  # type: List[Tool]
 
     def __repr__(self) -> str:
         """Method defining own way to represent (and print) an object
@@ -46,6 +47,9 @@ class Pawn(BoardElement):
 
         return self.has_moved
 
-
-    def pick_up(self, tool: Tool) -> bool:
-        pass
+    def pick_up(self, tool: Tool) -> List[Tool]:
+        """Alias method for append (more explicit name)
+        @param  Tool The tool to pick up
+        @return List List of tools owned by Pawn"""
+        self.tools.append(tool)
+        return self.tools
