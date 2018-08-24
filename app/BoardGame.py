@@ -98,8 +98,9 @@ class BoardGame:
             for i, line in enumerate(reader):
                 # For every cell *within* the line (excluding outside cells)
                 for j, value in enumerate(line[1:-1]):
+                    x, y = j, Config.BOARDGAME_HEIGHT - i - 1
                     value = value.upper()
-                    cell = (i, j)
+                    cell = (x, y)
                     # If cell is empty => authorized
                     if value == " ":
                         self.authorized_cells.add(cell)

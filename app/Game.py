@@ -6,10 +6,12 @@
 @note    0.0.1 (2018-08-22) : initialization
 """
 from app.BoardGame import BoardGame
+from app.Constants import Constants
 from app.Config import Config
 from app.Pawn import Pawn
 from app.Tool import Tool
 import random
+from typing import FrozenSet
 
 
 class Game:
@@ -44,7 +46,46 @@ class Game:
     def _start_game(self) -> bool:
         """Method managing user interaction
         @return bool True => success / False => failure"""
-        return random.choice((True, False))  # FOR DEV
+
+        print(self.boardgame.authorized_cells)
+        print('MacGyver is here : %s !' % (self.macgyver.position,))
+        print(self.boardgame.exit_cell)
+        while True:
+            freedom = False
+            way = None
+            command = input('> ').lower()
+            if command in ('q', 'quit', 'exit'):
+                break
+            elif command in ('h', 'help'):
+                pass
+            elif command in ('l', 'left'):
+                way = Constants.MOVE_LEFT
+            elif command in ('r', 'right'):
+                way = Constants.MOVE_RIGHT
+            elif command in ('u', 'up'):
+                way = Constants.MOVE_UP
+            elif command in ('d', 'down'):
+                way = Constants.MOVE_DOWN
+            else:
+                pass
+            if way is not None:
+                self.macgyver.move(self.boardgame.authorized_cells, way)
+                if self.macgyver.has_moved:
+                    print(
+                        'MacGyver has moved from %s to %s'
+                        % (self.macgyver.old_position, self.macgyver.position)
+                    )
+                    tools_positions = (tool.position for tool in self.tools)
+                    if self.macgyver.position in tools_positions:
+                        pass
+                    if self.macgyver.position == self.boardgame.exit_cell:
+                        freedom = True
+                        break
+                        self._allow_exit()
+                else:
+                    print("Even MacGyver cannot pass through brick walls !")
+            way = None
+        return freedom
 
     def _allow_exit(self) -> bool:
         pass
