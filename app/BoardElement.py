@@ -2,17 +2,19 @@
 """
 @desc Module containing the BoardElement abstract class
 @author SDQ <sdq@afnor.org>
-@version 1.0.0
+@version 1.0.1
 @note    1.0.0 (2018-08-22) : first functional version
+@note    1.0.1 (2018-08-24) : evolving because Thierry said an abstract
+                              constructor was weird
 """
-from abc import ABC, abstractmethod
+from abc import ABC
+
 
 class BoardElement(ABC):
-    """Abstract class defining all the elements which could be found on a boardgame,
-    for instance a pawn or a tool"""
-    @abstractmethod
+    """Abstract class defining all the elements which could be found on
+    a boardgame, for instance a pawn or a tool. SHOULD NOT BE INSTANTIATED"""
     def __init__(self, position):
-        """Abstract constructor defining a position for the object
+        """Constructor defining a position for the object
         @param tuple Position(Abscissa, Ordinate)"""
         self.position = position
 

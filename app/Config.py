@@ -6,8 +6,10 @@
 @note    1.0.0 (2018-08-22) : first functional version
 """
 
+
 class Config:
-    """Config class, intended to be used as a class only, containing all central
-    variables used throughout the project"""
-    PATH_MODEL_FILE = 'model.txt'
-    FORMAT_MODEL_FILE = 'text'
+    """Config class, intended to be used as a class only, containing all
+    central variables used throughout the project"""
+    PATH_MODEL_FILE = 'models/model.xlsx'
+    BOARDGAME_WIDTH = 15
+    BOARDGAME_HEIGHT = 15
