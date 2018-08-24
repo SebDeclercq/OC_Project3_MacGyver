@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-@desc Module containing the GameBoard class
+@desc Module containing the BoardGame class
 @author SDQ <sdq@afnor.org>
 @version 0.0.1
 @note    0.0.1 (2018-08-22) : init class
@@ -9,8 +9,8 @@ import xlrd
 import csv
 from app.Config import Config
 
-class GameBoard:
-    """Class defining a board for a gameboard"""
+class BoardGame:
+    """Class defining a board for a boardgame"""
     def __init__(self):
         self.authorized_cells = set()
         self.unauthorized_cells = set()

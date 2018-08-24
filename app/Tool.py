@@ -3,13 +3,26 @@
 @desc Module containing the Tool class
 @author SDQ <sdq@afnor.org>
 @version 1.0.0
-@note    1.0.0 (2018-08-22) : first functional version
+@note    1.0.0 (2018-08-24) : first functional version
 """
 from app.BoardElement import BoardElement
 
 class Tool(BoardElement):
-    """Class defining a tool on the board"""
-    def __init__(self, position):
+    """Class representing tools disposed on the BoardGame"""
+    allowed_types = ('needle', 'syringe', 'ether')
+
+    def __init__(self, position, type):
         """Constructor
         @param tuple Position(Abscissa, Ordinate)"""
         super().__init__(position)
+        if type in Tool.allowed_types:
+            self.type = type
+        else:
+            raise ValueError('Tool needs to be of type "%s", "%s" or "%s"'
+                             % Tool.allowed_types)
+
+    def __repr__(self):
+        """Method defining own way to represent (and print) an object
+        @return string"""
+        return ('<%s#%d position=%s, type=%s>'
+               % (self.__class__.__name__, id(self), self.position, self.type))
