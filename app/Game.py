@@ -35,8 +35,12 @@ class Game:
         """Method defining all four elements required on the boardgame :
         MacGyver, a needle, a syringe and a bottle of ether
         @return void"""
+        if len(self.boardgame.authorized_cells) <= 4:
+            raise ValueError('BoardGame must at least have 4 free cells')
         # Extract four distinct authorized positions
         random_positions = random.sample(self.boardgame.authorized_cells, 4)
+        while self.boardgame.exit_cell in random_positions:
+            random_positions = random.sample(self.boardgame.authorized_cells, 4)
         self.macgyver = Pawn(random_positions.pop(0))
         for i, typ in enumerate(('needle', 'syringe', 'ether')):
             self.tools.add(Tool(random_positions[i], typ))
