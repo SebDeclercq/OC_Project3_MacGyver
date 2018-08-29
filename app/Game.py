@@ -2,17 +2,20 @@
 """
 @desc Module containing the Game class
 @author SDQ <sdq@afnor.org>
-@version 0.0.2
+@version 0.0.3
 @note    0.0.1 (2018-08-22) : initialization
 @note    0.0.2 (2018-08-24) : game is handled from start to end (text-only)
+@note    0.0.3 (2018-08-29) : game has a first functional UI
 """
 from app.BoardGame import BoardGame
-from app.Constants import Constants
 from app.Config import Config
 from app.Pawn import Pawn
 from app.Tool import Tool
+from app.UIFactory import UIFactory as UI
+from typing import FrozenSet, List
 import random
-from typing import FrozenSet
+import json
+import copy
 
 
 class Game:
@@ -22,14 +25,33 @@ class Game:
         self.boardgame = BoardGame()
         self.tools = set()
         self._randomly_place_board_elements()
+        # Generating appropriated UI
+        self.ui = UI.factory(Config.USER_INTERFACE)
 
-    def play(self) -> None:
-        """Method defining the entire game process"""
-        result = self._start_game()
-        if result:
-            print(f"\033[1mMacGyver is FREEEE !\033[0m")
-        else:
-            print(f"\033[11mMacGyver didn't get out...\033[0m")
+    def play(self) -> bool:
+        """Method managing the gameplay
+        @return bool (useless)"""
+        freedom = False
+        way = None
+        data = self._get_json_for_ui(freedom)
+        self.ui.display(data)         # Display for the first time
+        while True:                   # Until pawn has reached exit_cell
+            way = self.ui.interact()  # Interact with player
+            if way is not None:
+                self.macgyver.move(self.boardgame.authorized_cells, way)
+                if self.macgyver.has_moved:
+                    for tool in self.tools:
+                        if self.macgyver.position == tool.position:
+                            self.macgyver.pick_up(tool)
+                            tool.position = None
+                    if self.macgyver.position == self.boardgame.exit_cell:
+                        freedom = self._allow_exit()
+                        data = self._get_json_for_ui(freedom)
+                        self.ui.display(data)
+                        break
+            data = self._get_json_for_ui(freedom)  # Format JSON for UI
+            self.ui.display(data)                  # UI display
+        return freedom
 
     def _randomly_place_board_elements(self) -> None:
         """Method defining all four elements required on the boardgame :
@@ -47,55 +69,6 @@ class Game:
         # Frozes the set for further use
         self.tools = frozenset(self.tools)
 
-    def _start_game(self) -> bool:
-        """Method managing user interaction
-        @return bool True => success / False => failure"""
-
-        if Config.DEBUG:
-            print('MacGyver is here : %s !' % (self.macgyver.position,))
-            print('Tools are here : ', [tool.position for tool in self.tools])
-            print('Exit is here : %s !' % (self.boardgame.exit_cell,))
-
-        while True:
-            freedom = False
-            way = None
-            command = input('> ').lower()
-            if command in ('q', 'quit', 'exit'):
-                break
-            elif command in ('h', 'help'):
-                pass
-            elif command in ('l', 'left'):
-                way = Constants.MOVE_LEFT
-            elif command in ('r', 'right'):
-                way = Constants.MOVE_RIGHT
-            elif command in ('u', 'up'):
-                way = Constants.MOVE_UP
-            elif command in ('d', 'down'):
-                way = Constants.MOVE_DOWN
-            else:
-                pass
-            if way is not None:
-                self.macgyver.move(self.boardgame.authorized_cells, way)
-                if self.macgyver.has_moved:
-                    print(
-                        'MacGyver has moved from %s to %s'
-                        % (self.macgyver.old_position, self.macgyver.position)
-                    )
-                    for tool in self.tools:
-                        if self.macgyver.position == tool.position:
-                            print('MacGyver has found a %s !' % tool.type)
-                            self.macgyver.pick_up(tool)
-                            tool.position = None
-                    if self.macgyver.position == self.boardgame.exit_cell:
-                        print('MacGyver has reached the guardian... '
-                              'Will he get free ?')
-                        freedom = self._allow_exit()
-                        break
-                else:
-                    print("Even MacGyver cannot pass through brick walls !")
-            way = None
-        return freedom
-
     def _allow_exit(self) -> bool:
         """Check if MacGyver has all three tools.
         @return bool If True, he can take the guardian down
@@ -104,3 +77,28 @@ class Game:
             return True
         else:
             return False
+
+    def _get_json_for_ui(self, freedom: bool) -> str:
+        """Method generating JSON string for UI config
+        @param  bool freedom Has MacGyver got free ?
+        @return str          The generated JSON"""
+        return json.dumps({
+            'matrix': self._get_current_boardgame_matrix(),
+            'old_position': self.macgyver.old_position,
+            'new_position': self.macgyver.position,
+            'tools': {
+                tool.type: tool.position for tool in self.tools
+            },
+            'exit_cell': self.boardgame.exit_cell,
+            'freedom': freedom
+        })
+
+    def _get_current_boardgame_matrix(self) -> List[List[str]]:
+        """Method generating a display matrix of game current stage
+        @return List[List[str]] The generated matrix"""
+        matrix = copy.deepcopy(self.boardgame.matrix)  # Copy init stage
+        matrix[self.macgyver.y][self.macgyver.x] = Config.PAWN_CHAR  # Add Pawn
+        for tool in self.tools:
+            if tool.position is not None:
+                matrix[tool.y][tool.x] = Config.TOOL_CHAR  # Add Tools if any
+        return matrix

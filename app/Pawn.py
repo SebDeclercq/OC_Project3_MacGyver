@@ -2,9 +2,10 @@
 """
 @desc Module containing the Pawn class
 @author SDQ <sdq@afnor.org>
-@version 0.0.2
+@version 0.0.3
 @note    0.0.1 (2018-08-22) : initialization
 @note    0.0.2 (2018-08-24) : all identified methods in UML are up and running
+@note    0.0.3 (2018-08-29) : adding old_position in constructor (for UIs)
 """
 from app.BoardElement import BoardElement
 from app.Constants import Constants
@@ -19,6 +20,7 @@ class Pawn(BoardElement):
         @param tuple Position(Abscissa, Ordinate)"""
         super().__init__(position)
         self.tools = []  # type: List[Tool]
+        self.old_position = self.position
 
     def __repr__(self) -> str:
         """Method defining own way to represent (and print) an object
@@ -29,6 +31,7 @@ class Pawn(BoardElement):
     def move(self, authorized_cells: FrozenSet[Tuple[int, int]],
              way: int) -> bool:
         self.has_moved = False
+        self.old_position = self.position
         if way == Constants.MOVE_LEFT:
             next_position = (self.x - 1, self.y)
         elif way == Constants.MOVE_RIGHT:
@@ -41,7 +44,6 @@ class Pawn(BoardElement):
             raise ValueError('Unkwnown command "%s"' % (str(way),))
 
         if next_position in authorized_cells:
-            self.old_position = self.position
             self.position = next_position
             self.has_moved = True
 

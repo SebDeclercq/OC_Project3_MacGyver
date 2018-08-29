@@ -2,16 +2,18 @@
 """
 @desc Module containing the BoardGame class
 @author SDQ <sdq@afnor.org>
-@version 0.0.3
+@version 0.0.4
 @note    0.0.1 (2018-08-22) : init class
 @note    0.0.2 (2018-08-24) : updating with sets + user-defined width & height
-@note    0.0.3 (2018-08-24) : reverting Y axis (put 0, 0 at the bottom-left
+@note    0.0.3 (2018-08-24) : inverting Y axis (put 0, 0 at the bottom-left
                               instead of top-left)
+@note    0.0.4 (2018-08-29) : adding an attr "matrix" displaying the boardgame
 """
 import xlrd
 import csv
 import os
 from app.Config import Config
+from typing import List
 
 
 class BoardGame:
@@ -21,6 +23,7 @@ class BoardGame:
         self.unauthorized_cells = set()
         self.exit_cell = None
         self._parse_model_file()
+        self._create_matrix_display()
 
     def _parse_model_file(self) -> None:
         model_dir = os.path.dirname(Config.PATH_MODEL_FILE)
@@ -32,7 +35,7 @@ class BoardGame:
         elif model_ext in ('.txt', '.csv'):
             self._parse_text_model_file(model_path)
         else:
-            raise ValueError('Unknown format "%s"' % Config.FORMAT_MODEL_FILE)
+            raise ValueError('Unknown format "%s"' % model_ext)
         if self.exit_cell is None:
             raise ValueError('Exit cell "V" missing from "%s"'
                              % Config.PATH_MODEL_FILE)
@@ -108,11 +111,28 @@ class BoardGame:
                     if value == " ":
                         self.authorized_cells.add(cell)
                     # If cell contains X => wall => unauthorized
-                    elif value == "X":
+                    elif value == Config.WALL_CHAR:
                         self.unauthorized_cells.add(cell)
                     # If cell contains V => exit cell
-                    elif value == "V":
+                    elif value == Config.EXIT_CHAR:
                         self.exit_cell = cell
                     else:
                         raise ValueError('Unknown value "%s" from "%s" line %d'
                                          % (value, Config.PATH_MODEL_FILE, i))
+
+    def _create_matrix_display(self) -> List[List[str]]:
+        """Method generating matrix display of the boardgame
+        based on model file
+        @return List[List[str]] The generated matrix"""
+        self.matrix = []  # type: List[List[str]]
+        for y in range(Config.BOARDGAME_HEIGHT):
+            self.matrix.append([])
+            for x in range(Config.BOARDGAME_WIDTH):
+                if (x, y) == self.exit_cell:
+                    cell = Config.EXIT_CHAR
+                elif (x, y) in self.authorized_cells:
+                    cell = ' '
+                else:
+                    cell = Config.WALL_CHAR
+                self.matrix[y].append(cell)
+        return self.matrix

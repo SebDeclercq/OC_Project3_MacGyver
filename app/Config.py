@@ -13,4 +13,10 @@ class Config:
     PATH_MODEL_FILE = 'models/model.xlsx'
     BOARDGAME_WIDTH = 15
     BOARDGAME_HEIGHT = 15
-    DEBUG = True
+    USER_INTERFACE = 'text'  # Should be text, prompt or pygame
+    # Characters representing the elements in
+    # model files and in display matrix
+    WALL_CHAR = 'X'
+    EXIT_CHAR = 'V'
+    PAWN_CHAR = 'P'
+    TOOL_CHAR = 'T'
