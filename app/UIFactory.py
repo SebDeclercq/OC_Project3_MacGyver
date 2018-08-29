@@ -5,9 +5,11 @@
 @version 1.0.0
 @note    0.0.1 (2018-08-28) : initialization
 @note    1.0.0 (2018-08-29) : first functional version
+@note    1.0.1 (2018-08-29) : adding a Prompt UI
 """
 from ui.UI import UI
 from ui.TextOnly import TextOnly
+from ui.Prompt import Prompt
 
 
 class UIFactory:
@@ -21,6 +23,8 @@ class UIFactory:
         type = type.lower()
         if type == 'text':
             ui = TextOnly()
+        elif type == 'prompt':
+            ui = Prompt()
         else:
             raise ValueError('Unkown type "%s" for UIs' % type)
         if not isinstance(ui, UI):
