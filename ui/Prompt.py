@@ -61,8 +61,8 @@ class Prompt(TextOnly):
             print('%04d hits' % (cls.movement_count,), '\n\n')
 
         tools = ['\033[%sm%s\033[0m ' % (cls.TOOL_BACKGROUND, type)
-                for type, position in data.tools.items() if position is None]
-        print('Tools : ', ''.join(tools), '\n\n' )
+                 for type, position in data.tools.items() if position is None]
+        print('Tools : ', ''.join(tools), '\n\n')
 
         for row in reversed(data.matrix):
             print('|' + '|'.join(row) + '|')

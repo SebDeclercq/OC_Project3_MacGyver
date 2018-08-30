@@ -29,7 +29,7 @@ class UI(ABC):
     """Abstract class, parent of all UI classes"""
     movement_count = 0
     found_tools = []
-    
+
     @abstractmethod
     def interact(cls) -> Any:
         """Abstract class method for user interaction management"""

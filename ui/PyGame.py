@@ -49,8 +49,6 @@ class PyGame(UI):
                 elif event.key == pygame.K_a:  # == q (because QWERTY KEYBOARD)
                     cls.display(json.dumps({}), quit=True)
                     exit()
-                else:
-                    print(event.key)
 
     @classmethod
     def display(cls, json: str, quit=False) -> None:
@@ -119,7 +117,6 @@ class PyGame(UI):
 
         cls.movement_count += 1
 
-
     @classmethod
     def _create_board_element(cls, img: str) -> pygame.Surface:
         """Class method creating an instance of BoardElement class,
@@ -146,11 +143,11 @@ class PyGame(UI):
         )
 
     @classmethod
-    def _pixel_position(cls, position: Tuple[int]) -> Tuple[int]:
+    def _pixel_position(cls, position: Tuple[int, int]) -> Tuple[int, int]:
         """Class method converting matrix position into a pixelated
         representation of it
-        @param  Tuple[int] position Position to update
-        @return Tuple[int]          Updated position"""
+        @param  Tuple[int, int] position Position to update
+        @return Tuple[int, int]          Updated position"""
         return (
             position[0] * cls.CELL_SIDE_SIZE,
             position[1] * cls.CELL_SIDE_SIZE
