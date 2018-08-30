@@ -37,8 +37,8 @@ class BoardGame:
         else:
             raise ValueError('Unknown format "%s"' % model_ext)
         if self.exit_cell is None:
-            raise ValueError('Exit cell "V" missing from "%s"'
-                             % Config.PATH_MODEL_FILE)
+            raise ValueError('Exit cell "%s" missing from "%s"'
+                             % (Config.EXIT_CHAR, Config.PATH_MODEL_FILE))
         else:
             # exit_cell is obviously authorized
             self.authorized_cells.add(self.exit_cell)
@@ -68,9 +68,9 @@ class BoardGame:
                 cell = (x, y)                           # Instantiate cell
                 if value == xlrd.empty_cell.value:      # If empty=>authorized
                     self.authorized_cells.add(cell)
-                elif value == "X":                      # If X=>unauthorized
+                elif value == Config.WALL_CHAR:
                     self.unauthorized_cells.add(cell)
-                elif value == "V":                      # If V=>exit cell
+                elif value == Config.EXIT_CHAR:
                     self.exit_cell = cell
                 else:
                     raise ValueError(
@@ -107,13 +107,10 @@ class BoardGame:
                     x, y = j, Config.BOARDGAME_HEIGHT - i - 1
                     value = value.upper()
                     cell = (x, y)
-                    # If cell is empty => authorized
                     if value == " ":
                         self.authorized_cells.add(cell)
-                    # If cell contains X => wall => unauthorized
                     elif value == Config.WALL_CHAR:
                         self.unauthorized_cells.add(cell)
-                    # If cell contains V => exit cell
                     elif value == Config.EXIT_CHAR:
                         self.exit_cell = cell
                     else:
