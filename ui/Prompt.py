@@ -69,7 +69,7 @@ class Prompt(TextOnly):
         print('\n')
         for tool_type, position in data.tools.items():
             if position is None and tool_type not in cls.found_tools:
-                print('\nMacGyver has found a %s !' % tool_type)
+                print('MacGyver has found a %s !\n' % tool_type)
                 cls.found_tools.append(tool_type)
         if data.new_position == data.exit_cell:
             if data.freedom:

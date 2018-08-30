@@ -14,8 +14,6 @@ import json
 
 class TextOnly(UI):
     """Class managing a text-only UI"""
-    movement_count = 0
-    found_tools = []
 
     @classmethod
     def interact(cls) -> int:

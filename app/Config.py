@@ -13,7 +13,7 @@ class Config:
     PATH_MODEL_FILE = 'models/model.xlsx'
     BOARDGAME_WIDTH = 15
     BOARDGAME_HEIGHT = 15
-    USER_INTERFACE = 'text'  # Should be text, prompt or pygame
+    USER_INTERFACE = 'GUI'  # Should be text, prompt or GUI
     # Characters representing the elements in
     # model files and in display matrix
     WALL_CHAR = 'X'
