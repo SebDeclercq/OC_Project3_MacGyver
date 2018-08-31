@@ -2,10 +2,11 @@
 """
 @desc Module containing the Game class
 @author SDQ <sdq@afnor.org>
-@version 0.0.3
+@version 1.0.0
 @note    0.0.1 (2018-08-22) : initialization
 @note    0.0.2 (2018-08-24) : game is handled from start to end (text-only)
 @note    0.0.3 (2018-08-29) : game has a first functional UI
+@note    1.0.0 (2018-08-31) : project's first complete version
 """
 from app.BoardGame import BoardGame
 from app.Config import Config
@@ -37,18 +38,22 @@ class Game:
         self.ui.display(data)         # Display for the first time
         while True:                   # Until pawn has reached exit_cell
             way = self.ui.interact()  # Interact with player
+            # If a move instruction is received
             if way is not None:
                 self.macgyver.move(self.boardgame.authorized_cells, way)
+                # If MacGyver is authorized to move that way and has moved
                 if self.macgyver.has_moved:
                     for tool in self.tools:
+                        # If MacGyver is at a tool position, he picks it up
                         if self.macgyver.position == tool.position:
                             self.macgyver.pick_up(tool)
                             tool.position = None
+                    # If MacGyver is in front of the guardian
                     if self.macgyver.position == self.boardgame.exit_cell:
                         freedom = self._allow_exit()
                         data = self._get_json_for_ui(freedom)
                         self.ui.display(data)
-                        break
+                        break  # End of game
             data = self._get_json_for_ui(freedom)  # Format JSON for UI
             self.ui.display(data)                  # UI display
         return freedom

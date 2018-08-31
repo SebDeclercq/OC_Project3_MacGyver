@@ -2,10 +2,11 @@
 """
 @desc Module containing the Pawn class
 @author SDQ <sdq@afnor.org>
-@version 0.0.3
+@version 1.0.0
 @note    0.0.1 (2018-08-22) : initialization
 @note    0.0.2 (2018-08-24) : all identified methods in UML are up and running
 @note    0.0.3 (2018-08-29) : adding old_position in constructor (for UIs)
+@note    1.0.0 (2018-08-31) : project's first complete version
 """
 from app.BoardElement import BoardElement
 from app.Constants import Constants
@@ -30,6 +31,11 @@ class Pawn(BoardElement):
 
     def move(self, authorized_cells: FrozenSet[Tuple[int, int]],
              way: int) -> bool:
+        """Method piloting the pawn's movement on the boardgame
+        @param  FrozenSet[Tuple[int, int]] authorized_cells List of authorized
+                                                            positions
+        @param  int  way            Which way to go
+        @return bool self.has_moved Did or did not move"""
         self.has_moved = False
         self.old_position = self.position
         if way == Constants.MOVE_LEFT:

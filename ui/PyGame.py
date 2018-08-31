@@ -34,7 +34,7 @@ class PyGame(UI):
     ETHER_IMG = 'Ether.png'
     CELL_SIDE_SIZE = 35
     WAIT_TIME = 2000
-    found_tools = {}
+    found_tools = {}  # type: Dict
 
     @classmethod
     def interact(cls) -> int:
@@ -53,7 +53,8 @@ class PyGame(UI):
                     return Constants.MOVE_UP
                 elif event.key in (pygame.K_DOWN, pygame.K_d):
                     return Constants.MOVE_DOWN
-                elif event.key == pygame.K_a:  # == q (because QWERTY KEYBOARD)
+                elif event.key in (pygame.K_a, pygame.K_q):
+                    # K_a for AZERTY keyboards
                     cls.display(json.dumps({}), quit=True)
                     exit()
 
@@ -68,7 +69,7 @@ class PyGame(UI):
         # Displays background with filling color
         boardgame = pygame.display.set_mode(
             cls._pixel_position((
-                Config.BOARDGAME_WIDTH + 1, # + 1 for the "toolbar"
+                Config.BOARDGAME_WIDTH + 1,  # + 1 for the "toolbar"
                 Config.BOARDGAME_HEIGHT
             ))
         )
@@ -87,7 +88,7 @@ class PyGame(UI):
                 cls._print_message('Lost...', boardgame, cls.LOSE_COLOR)
             return None
 
-        # Display walls on the boardgame, by parsing the matrix backwards
+        # Displays walls on the boardgame, by parsing the matrix backwards
         # to place them well in pygame
         wall = cls._create_board_element(cls.WALL_IMG)
         for y, row in enumerate(reversed(data.matrix)):
@@ -95,10 +96,12 @@ class PyGame(UI):
                 if cell == Config.WALL_CHAR:
                     boardgame.blit(wall, cls._pixel_position((x, y)))
 
+        # Displays guardian
         guardian = cls._create_board_element(cls.GUARDIAN_IMG)
         data.exit_cell = cls._update_position(data.exit_cell)
         boardgame.blit(guardian, cls._pixel_position(data.exit_cell))
 
+        # Displays pawn
         pawn = cls._create_board_element(cls.PAWN_IMG)
         data.new_position = cls._update_position(data.new_position)
         boardgame.blit(pawn, cls._pixel_position(data.new_position))

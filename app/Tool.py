@@ -11,17 +11,17 @@ from typing import Tuple
 
 class Tool(BoardElement):
     """Class representing tools disposed on the BoardGame"""
-    allowed_types = ('needle', 'syringe', 'ether')
+    authorized_types = ('needle', 'syringe', 'ether')
 
     def __init__(self, position: Tuple[int, int], type: str) -> None:
         """Constructor
-        @param tuple Position(Abscissa, Ordinate)"""
+        @param Tuple[int, int] Position(Abscissa, Ordinate)"""
         super().__init__(position)
-        if type in Tool.allowed_types:
+        if type in Tool.authorized_types:
             self.type = type
         else:
             raise ValueError('Tool needs to be of type "%s", "%s" or "%s"'
-                             % Tool.allowed_types)
+                             % Tool.authorized_types)
 
     def __repr__(self) -> str:
         """Method defining own way to represent (and print) an object

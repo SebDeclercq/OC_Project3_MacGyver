@@ -14,6 +14,7 @@ import json
 import platform
 import os
 
+
 class TextOnly(UI):
     """Class managing a text-only UI"""
 

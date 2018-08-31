@@ -2,12 +2,13 @@
 """
 @desc Module containing the BoardGame class
 @author SDQ <sdq@afnor.org>
-@version 0.0.4
+@version 1.0.0
 @note    0.0.1 (2018-08-22) : init class
 @note    0.0.2 (2018-08-24) : updating with sets + user-defined width & height
 @note    0.0.3 (2018-08-24) : inverting Y axis (put 0, 0 at the bottom-left
                               instead of top-left)
 @note    0.0.4 (2018-08-29) : adding an attr "matrix" displaying the boardgame
+@note    1.0.0 (2018-08-31) : project's first complete version
 """
 import xlrd
 import csv
@@ -26,6 +27,9 @@ class BoardGame:
         self._create_matrix_display()
 
     def _parse_model_file(self) -> None:
+        """Method parsing "model" files, i.e. files containing the
+        labyrinth's map for the game to play
+        @return void"""
         model_dir = os.path.dirname(Config.PATH_MODEL_FILE)
         model_file = os.path.basename(Config.PATH_MODEL_FILE)
         model_ext = os.path.splitext(Config.PATH_MODEL_FILE)[1].lower()
@@ -43,6 +47,7 @@ class BoardGame:
             # exit_cell is obviously authorized
             self.authorized_cells.add(self.exit_cell)
 
+        # If the cell count is different from the config, quits
         if (len(self.authorized_cells) + len(self.unauthorized_cells)
                 != Config.BOARDGAME_WIDTH * Config.BOARDGAME_HEIGHT):
             raise ValueError(
@@ -56,6 +61,7 @@ class BoardGame:
 
     def _parse_excel_model_file(self, model_path: str) -> None:
         """Method parsing the Excel model file (path in Config class)
+        @param  str model_path Path to the file to parse
         @return void"""
         workbook = xlrd.open_workbook(model_path)
         sheet = workbook.sheet_by_index(0)
@@ -97,6 +103,7 @@ class BoardGame:
     def _parse_text_model_file(self, model_path: str) -> None:
         """Method parsing the Text model file (path in Config class).
         Reads the input file as a CSV file delimited by |
+        @param  str model_path Path to the file to parse
         @return void"""
         with open(model_path) as model_file:
             reader = csv.reader(model_file, delimiter='|', lineterminator='\n')
@@ -105,9 +112,9 @@ class BoardGame:
                 # For every cell *within* the line (excluding outside cells)
                 for j, value in enumerate(line[1:-1]):
                     x, y = j, Config.BOARDGAME_HEIGHT - i - 1
-                    value = value.upper()
-                    cell = (x, y)
-                    if value == " ":
+                    value = value.upper()  # Get cell value
+                    cell = (x, y)          # Instantiate cell
+                    if value == " ":       # If empty=>authorized
                         self.authorized_cells.add(cell)
                     elif value == Config.WALL_CHAR:
                         self.unauthorized_cells.add(cell)
@@ -119,7 +126,7 @@ class BoardGame:
 
     def _create_matrix_display(self) -> List[List[str]]:
         """Method generating matrix display of the boardgame
-        based on model file
+        based on the model file
         @return List[List[str]] The generated matrix"""
         self.matrix = []  # type: List[List[str]]
         for y in range(Config.BOARDGAME_HEIGHT):
