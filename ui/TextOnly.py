@@ -2,15 +2,17 @@
 """
 @desc Module containing the UI class for text-only display
 @author SDQ <sdq@afnor.org>
-@version 1.0.1
+@version 1.0.2
 @note    0.0.1 (2018-08-28) : initialization
 @note    1.0.0 (2018-08-29) : first functional version
 @note    1.0.1 (2018-08-29) : better screen display
+@note    1.0.2 (2018-08-31) : adding a class method to clear screen
 """
 from ui.UI import UI
 from app.Constants import Constants
 import json
-
+import platform
+import os
 
 class TextOnly(UI):
     """Class managing a text-only UI"""
@@ -71,3 +73,11 @@ class TextOnly(UI):
                 else:
                     print(f"\033[41mMacGyver didn't get out...\033[0m")
         cls.movement_count += 1
+
+    @classmethod
+    def _clear_screen(cls) -> None:
+        """Class method clearing screen based on OS type"""
+        if platform.system() == 'Windows':
+            os.system('cls')
+        else:
+            os.system('clear')
